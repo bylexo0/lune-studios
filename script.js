@@ -273,3 +273,45 @@ if (heroStats) {
 }
 
 console.log('Lune Studios website loaded successfully!');
+
+// ===== LANGUAGE SWITCHER =====
+const langBtns = document.querySelectorAll('.lang-btn');
+let currentLang = localStorage.getItem('luneLang') || 'en';
+
+// Initialize language on page load
+const setLanguage = (lang) => {
+    currentLang = lang;
+    localStorage.setItem('luneLang', lang);
+    document.documentElement.lang = lang;
+
+    // Update button states
+    langBtns.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+
+    // Update all translatable elements
+    document.querySelectorAll('[data-en][data-fr]').forEach(el => {
+        const translation = el.getAttribute(`data-${lang}`);
+        if (translation) {
+            el.innerHTML = translation;
+        }
+    });
+
+    // Update placeholders for inputs and textareas
+    document.querySelectorAll('[data-placeholder-en][data-placeholder-fr]').forEach(el => {
+        const placeholder = el.getAttribute(`data-placeholder-${lang}`);
+        if (placeholder) {
+            el.placeholder = placeholder;
+        }
+    });
+};
+
+// Add click handlers to language buttons
+langBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        setLanguage(btn.dataset.lang);
+    });
+});
+
+// Apply saved language preference on load
+setLanguage(currentLang);
